@@ -8,7 +8,35 @@ public class class1 {
 
 	public static void main(String[] args) throws FileNotFoundException, IOException, ClassNotFoundException {
 		serializeObjects(readEmployeesInfos());
-		deserializeObjects();
+		ArrayList<Employee> employees = new ArrayList<>();
+		employees = deserializeObjects();
+
+		// Writing objects into RandomAccessFile
+		RandomAccessFile raf = new RandomAccessFile("employee.dat", "rw");
+		for (Employee e : employees) {
+			e.writeObj(raf);
+		}
+
+		// Reading objects from RandomAccessFile
+		raf = new RandomAccessFile("employee.dat", "rw");
+		Employee e = new Employee();
+		int numRecords = (int) raf.length() / e.size();
+		for (int i = 0; i < numRecords; i++) {
+			e.read(raf);
+			System.out.print(e.name + " ");
+			System.out.print(e.address + " ");
+			System.out.print(e.number + " ");
+		}
+		raf.seek(0);
+		long current = 0;
+		while (current < raf.length()) {
+
+			// read the file
+			String result = raf.readUTF();
+			System.out.println(result);
+			current = raf.getFilePointer();
+		}
+
 	}
 
 	// Retrieve employess infos from user interface
@@ -62,26 +90,18 @@ public class class1 {
 	}
 
 	// Deserialize a file of objects
-	public static void deserializeObjects() {
+	public static ArrayList<Employee> deserializeObjects() throws IOException, ClassNotFoundException {
 		// Employee employees[] = null;
 		ArrayList<Employee> employees = new ArrayList<>();
-		try {
-			FileInputStream fileIn = new FileInputStream("serialize.dat");
-			ObjectInputStream in = new ObjectInputStream(fileIn);
-			Object obj = null;
-			while ((obj = in.readObject()) instanceof endoffile == false) {
-				employees.add((Employee) obj);
-			}
-			in.close();
-			fileIn.close();
-		} catch (IOException i) {
-			i.printStackTrace();
-			return;
-		} catch (ClassNotFoundException c) {
-			System.out.println("classe Employee non trouvee");
-			c.printStackTrace();
-			return;
+
+		FileInputStream fileIn = new FileInputStream("serialize.dat");
+		ObjectInputStream in = new ObjectInputStream(fileIn);
+		Object obj = null;
+		while ((obj = in.readObject()) instanceof endoffile == false) {
+			employees.add((Employee) obj);
 		}
+		in.close();
+		fileIn.close();
 
 		for (Employee e : employees) {
 			System.out.println("Employee deserialise...");
@@ -89,6 +109,7 @@ public class class1 {
 			System.out.println("Adresse: " + e.address);
 			System.out.println("Number: " + e.number);
 		}
+		return employees;
 	}
 }
 
