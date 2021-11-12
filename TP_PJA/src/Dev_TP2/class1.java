@@ -12,7 +12,7 @@ public class class1 {
 		employees = deserializeObjects();
 
 		// Writing objects into RandomAccessFile
-		RandomAccessFile raf = new RandomAccessFile("employee.dat", "rw");
+		RandomAccessFile raf = new RandomAccessFile("empdirect.dat", "rw");
 		for (Employee e : employees) {
 			e.writeObj(raf);
 		}
@@ -76,7 +76,7 @@ public class class1 {
 	public static void serializeObjects(Object[] objects) {
 		ObjectOutputStream objOut = null;
 		try {
-			objOut = new ObjectOutputStream(new FileOutputStream("serialize.dat"));
+			objOut = new ObjectOutputStream(new FileOutputStream("emp.dat"));
 			for (Object o : objects) {
 				objOut.writeObject(o);
 			}
@@ -94,7 +94,7 @@ public class class1 {
 		// Employee employees[] = null;
 		ArrayList<Employee> employees = new ArrayList<>();
 
-		FileInputStream fileIn = new FileInputStream("serialize.dat");
+		FileInputStream fileIn = new FileInputStream("emp.dat");
 		ObjectInputStream in = new ObjectInputStream(fileIn);
 		Object obj = null;
 		while ((obj = in.readObject()) instanceof endoffile == false) {
